@@ -42,7 +42,7 @@
             margin-right: 10px;
             cursor: pointer;
             font-size: 14px;
-			color: #c4c7c5;
+            color: #c4c7c5;
             white-space: nowrap;
         }
         .tag:hover {
@@ -196,17 +196,19 @@
                         });
                     });
                     displayTags();
-                    showMoreNotes(); // Show the first note initially
+                    showMoreNotes(5); // Show the first 5 notes initially
                 }
             });
         }
 
-        function showMoreNotes() {
-            if (currentIndex < notes.length) {
-                displayNote(notes[currentIndex]);
-                currentIndex++;
-            } else {
-                alert("No more notes to display.");
+        function showMoreNotes(count = 1) {
+            var endIndex = currentIndex + count;
+            var notesToShow = notes.slice(currentIndex, endIndex);
+            notesToShow.forEach(displayNote);
+            currentIndex = endIndex;
+
+            if (currentIndex >= notes.length) {
+                document.querySelector('.show-more-button').disabled = true;
             }
         }
 
@@ -216,3 +218,4 @@
     </script>
 </body>
 </html>
+
