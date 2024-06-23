@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Merriweather&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posted Notes</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .tags-container-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #111;
+            z-index: 10;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+        }
+        .tags-container {
+            max-width: 800px;
+            display: flex;
+            overflow-x: auto;
+        }
+        .tag {
+            background-color: #333333;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 14px;
+			color: #c4c7c5;
+            white-space: nowrap;
+        }
+        .tag:hover {
+            background-color: #1c86ee;
+        }
+        .notes-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-top: 70px; /* Ensure notes don't overlap with fixed tags-container */
+        }
+        .notes-list {
+            width: 100%;
+            max-width: 800px;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .note-item {
+            background-color: #1f1f1f;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            font-family: 'Merriweather', serif;
+            font-size: 12px;
+            color: #c4c7c5;
+            line-height: 1.6;
+        }
+        .show-more-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333333;
+            color: #c4c7c5;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        .show-more-button:hover {
+            background-color: #1c86ee;
+        }
+        @media (max-width: 800px) {
+            .notes-list {
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tags-container-wrapper">
+        <div class="tags-container" id="tags-container">
+            <!-- Hashtags will be displayed here -->
+        </div>
+    </div>
+    <div class="notes-container">
+        <div class="notes-list" id="notes-list">
+            <!-- Notes will be displayed here -->
+        </div>
+        <button class="show-more-button" onclick="showMoreNotes()">Show More</button>
+    </div>
+
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1002.0.min.js"></script>
+    <script>
+        // Configure AWS SDK
+        AWS.config.update({
+            region: 'eu-north-1',
+            credentials: new AWS.Credentials('AKIAVRUVVVUM65TIIUHH', 'ZkGMefa8j6JcqV7y3CF/5cNSP9hwKn7FoQrkEm3y')
+        });
+
+        var dynamodb = new AWS.DynamoDB.DocumentClient();
+        var tableName = 'solfan';
+        var notes = [];
+        var currentIndex = 0;
+        var hashtags = new Set();
+
+        function extractHashtags(text) {
+            var regex = /#(\w+)/g;
+            var matches = [];
+            var match;
+            while (match = regex.exec(text)) {
+                matches.push(match[1]);
+            }
+            return matches;
+        }
+
+        function displayTags() {
+            var tagsContainer = document.getElementById('tags-container');
+            tagsContainer.innerHTML = '';
+            hashtags.forEach(function(tag) {
+                var div = document.createElement('div');
+                div.className = 'tag';
+                div.textContent = '#' + tag;
+                div.onclick = function() { filterNotesByTag(tag); };
+                tagsContainer.appendChild(div);
+            });
+        }
+
+        function filterNotesByTag(tag) {
+            var filteredNotes = notes.filter(function(note) {
+                return note.text.includes('#' + tag);
+            });
+            displayNotes(filteredNotes);
+        }
+
+        function displayNote(note) {
+            var list = document.getElementById('notes-list');
+            var div = document.createElement('div');
+            div.className = 'note-item';
+            div.innerHTML = makeLinksClickable(note.text);
+            list.appendChild(div);
+        }
+
+        function displayNotes(notesToDisplay) {
+            var list = document.getElementById('notes-list');
+            list.innerHTML = '';
+            notesToDisplay.forEach(displayNote);
+        }
+
+        function makeLinksClickable(text) {
+            var urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+                return '<a href="' + url + '" target="_blank" style="color: #ffd55f;">' + url + '</a>';
+            });
+        }
+
+        function loadNotes() {
+            var params = {
+                TableName: tableName,
+                FilterExpression: "#type = :typeVal",
+                ExpressionAttributeNames: {
+                    "#type": "type"
+                },
+                ExpressionAttributeValues: {
+                    ":typeVal": "note"
+                }
+            };
+
+            dynamodb.scan(params, function(err, data) {
+                if (err) {
+                    alert("Error loading notes from DynamoDB: " + err.message);
+                } else {
+                    notes = data.Items.sort(function(a, b) {
+                        return new Date(b.date) - new Date(a.date);
+                    });
+                    notes.forEach(function(note) {
+                        extractHashtags(note.text).forEach(function(tag) {
+                            hashtags.add(tag);
+                        });
+                    });
+                    displayTags();
+                    showMoreNotes(); // Show the first note initially
+                }
+            });
+        }
+
+        function showMoreNotes() {
+            if (currentIndex < notes.length) {
+                displayNote(notes[currentIndex]);
+                currentIndex++;
+            } else {
+                alert("No more notes to display.");
+            }
+        }
+
+        window.onload = function() {
+            loadNotes();
+        };
+    </script>
+</body>
+</html>
