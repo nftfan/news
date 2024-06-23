@@ -150,18 +150,13 @@
             displayNotes(filteredNotes);
         }
 
-        function displayNote(note) {
-            var list = document.getElementById('notes-list');
-            var div = document.createElement('div');
-            div.className = 'note-item';
-            div.innerHTML = makeLinksClickable(note.text);
-            list.appendChild(div);
-        }
-
-        function displayNotes(notesToDisplay) {
-            var list = document.getElementById('notes-list');
-            list.innerHTML = '';
-            notesToDisplay.forEach(displayNote);
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
 
         function makeLinksClickable(text) {
@@ -169,6 +164,28 @@
             return text.replace(urlRegex, function(url) {
                 return '<a href="' + url + '" target="_blank" style="color: #ffd55f;">' + url + '</a>';
             });
+        }
+
+        function highlightHashtags(text) {
+            var hashtagRegex = /#(\w+)/g;
+            return text.replace(hashtagRegex, function(hashtag) {
+                var color = getRandomColor();
+                return '<span style="background-color:' + color + '; border-radius: 5px; padding: 2px 4px;">' + hashtag + '</span>';
+            });
+        }
+
+        function displayNote(note) {
+            var list = document.getElementById('notes-list');
+            var div = document.createElement('div');
+            div.className = 'note-item';
+            div.innerHTML = highlightHashtags(makeLinksClickable(note.text));
+            list.appendChild(div);
+        }
+
+        function displayNotes(notesToDisplay) {
+            var list = document.getElementById('notes-list');
+            list.innerHTML = '';
+            notesToDisplay.forEach(displayNote);
         }
 
         function loadNotes() {
@@ -218,4 +235,5 @@
     </script>
 </body>
 </html>
+
 
