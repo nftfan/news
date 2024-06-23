@@ -170,7 +170,7 @@
             var hashtagRegex = /#(\w+)/g;
             return text.replace(hashtagRegex, function(hashtag) {
                 var color = getRandomColor();
-                return '<span style="background-color:' + color + '; border-radius: 5px; padding: 2px 4px;">' + hashtag + '</span>';
+                return '<span style="background-color:' + color + '; color: #1f1f1f; border-radius: 5px; padding: 2px 4px;">' + hashtag + '</span>';
             });
         }
 
@@ -235,5 +235,6 @@
     </script>
 </body>
 </html>
+
 
 
