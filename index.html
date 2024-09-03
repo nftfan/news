@@ -31,6 +31,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
         }
 
         .article-container img {
@@ -59,20 +60,23 @@
         }
 
         .article-content {
-            display: none;
-            padding: 20px;
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
             font-size: 1em;
             line-height: 1.6;
             color: #cfcfcf;
+            opacity: 0;
+            transition: max-height 0.5s ease, opacity 0.5s ease;
         }
 
         .article-content.expanded {
-            display: block;
+            max-height: 500px; /* Adjust based on content height */
+            opacity: 1;
         }
 
         .article-container:hover {
             transform: scale(1.02);
-            transition: transform 0.3s ease-in-out;
         }
     </style>
 </head>
@@ -114,3 +118,4 @@
     </script>
 </body>
 </html>
+
