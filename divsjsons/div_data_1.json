@@ -1,0 +1,3 @@
+{
+    "div_html": "<div class=\"article-container\">\n        <img src=\"https://raw.githubusercontent.com/nftfan/news/main/images/1.webp\" \n             alt=\"Article Image\"\n             onclick=\"toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article1.html')\">\n        <a href=\"https://news.nftfanstoken.com/2024/09/03/hello-my-name-is-what.html\" \n           class=\"headline\" \n           target=\"_blank\">hello my name is what</a>\n        <div class=\"publication-date\">Published on September 03, 2024</div>\n        <div class=\"article-content\"></div>\n    </div>"
+}
