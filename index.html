@@ -81,16 +81,7 @@
         <h1>NFTFANS NEWS</h1>
     </header>
 
-    <div class="article-container">
-        <img src="https://github.com/nftfan/news/blob/main/images/Untitled%20design%20(7).png?raw=true" 
-             alt="Article Image"
-             onclick="toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article1.html')">
-        <a href="https://news.nftfanstoken.com/2024/09/03/nft-market-booms-in-2024.html" 
-           class="headline" 
-           target="_blank">NFT Market Booms in 2024</a>
-        <div class="publication-date">Published on September 3, 2024</div>
-        <div class="article-content"></div>
-    </div>
+    <div id="article-container"></div>
 
     <script>
         function toggleArticleContent(imgElement, articleUrl) {
@@ -111,9 +102,42 @@
                     });
             }
         }
+
+        function openArticleInSameTab(url) {
+            window.location.href = url;
+        }
+
+        // Function to load external HTML
+        function loadExternalHTML(url) {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('article-container').innerHTML = html;
+                    // Attach event listeners to dynamically loaded elements
+                    document.querySelectorAll('.article-container img').forEach(img => {
+                        img.addEventListener('click', function() {
+                            const articleUrl = this.getAttribute('data-article-url');
+                            toggleArticleContent(this, articleUrl);
+                        });
+                    });
+
+                    document.querySelectorAll('.headline').forEach(headline => {
+                        headline.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            const articleUrl = this.getAttribute('data-article-url');
+                            openArticleInSameTab(articleUrl);
+                        });
+                    });
+                })
+                .catch(error => console.error('Error loading external HTML:', error));
+        }
+
+        // Load the external HTML
+        loadExternalHTML('https://raw.githubusercontent.com/nftfan/news/main/divs/1.html');
     </script>
 </body>
 </html>
+
 
 
 
