@@ -1,243 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9383282240499260"
-     crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&family=Merriweather&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NFTFANS NEWS</title>
-    <link rel="icon" href="https://i.ibb.co/vxNxRkD/newspaper.png" type="image/png">
     <style>
         body {
-            background-color: #000000;
-            color: #fff;
+            background-color: #121212;
+            color: #e0e0e0;
             font-family: Arial, sans-serif;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
-            box-sizing: border-box;
         }
-        .tags-container-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: #111;
-            z-index: 10;
-            padding: 10px 0;
-            border-bottom: 1px solid #444;
+
+        header {
+            text-align: center;
+            padding: 20px 0;
         }
-        .tags-container {
+
+        header h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00bcd4;
+        }
+
+        .article-container {
             max-width: 800px;
-            display: flex;
-            overflow-x: auto;
+            margin: 20px auto;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        .tag {
-            background-color: #333333;
-            padding: 5px 10px;
-            border-radius: 5px;
-            margin-right: 10px;
+
+        .article-container img {
+            width: 100%;
+            height: auto;
             cursor: pointer;
-            font-size: 14px;
-            color: #c4c7c5;
-            white-space: nowrap;
         }
-        .tag:hover {
-            background-color: #1c86ee;
+
+        .headline {
+            padding: 15px 20px 5px 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00bcd4;
+            text-decoration: none;
+            display: block;
         }
-        .notes-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            padding-top: 70px; /* Ensure notes don't overlap with fixed tags-container */
+
+        .headline:hover {
+            text-decoration: underline;
         }
-        .notes-list {
-            width: 100%;
-            max-width: 800px;
-            background-color: #333;
-            padding: 10px;
-            border-radius: 5px;
-            box-sizing: border-box;
+
+        .publication-date {
+            padding: 0 20px 15px 20px;
+            font-size: 0.9em;
+            color: #a0a0a0;
         }
-        .note-item {
-            background-color: #1f1f1f;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            word-wrap: break-word;
-            font-family: 'Merriweather', serif;
-            font-size: 12px;
-            color: #c4c7c5;
+
+        .article-content {
+            display: none;
+            padding: 20px;
+            font-size: 1em;
             line-height: 1.6;
+            color: #cfcfcf;
         }
-        .show-more-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333333;
-            color: #c4c7c5;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 20px;
+
+        .article-content.expanded {
+            display: block;
         }
-        .show-more-button:hover {
-            background-color: #1c86ee;
-        }
-        @media (max-width: 800px) {
-            .notes-list {
-                max-width: 350px;
-            }
+
+        .article-container:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease-in-out;
         }
     </style>
 </head>
 <body>
-    <div class="tags-container-wrapper">
-        <div class="tags-container" id="tags-container">
-            <!-- Hashtags will be displayed here -->
-        </div>
-    </div>
-    <div class="notes-container">
-        <div class="notes-list" id="notes-list">
-            <!-- Notes will be displayed here -->
-        </div>
-        <button class="show-more-button" onclick="showMoreNotes()">Show More</button>
+    <header>
+        <h1>NFTFANS NEWS</h1>
+    </header>
+
+    <div class="article-container">
+        <img src="https://github.com/nftfan/news/blob/main/images/Untitled%20design%20(7).png?raw=true" 
+             alt="Article Image"
+             onclick="toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article1.html')">
+        <a href="https://news.nftfanstoken.com/2024/09/03/nft-market-booms-in-2024.html" 
+           class="headline" 
+           target="_blank">NFT Market Booms in 2024</a>
+        <div class="publication-date">Published on September 3, 2024</div>
+        <div class="article-content"></div>
     </div>
 
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1002.0.min.js"></script>
     <script>
-        // Configure AWS SDK
-        AWS.config.update({
-            region: 'eu-north-1',
-            credentials: new AWS.Credentials('AKIAVRUVVVUM65TIIUHH', 'ZkGMefa8j6JcqV7y3CF/5cNSP9hwKn7FoQrkEm3y')
-        });
-
-        var dynamodb = new AWS.DynamoDB.DocumentClient();
-        var tableName = 'solfan';
-        var notes = [];
-        var currentIndex = 0;
-        var hashtags = new Set();
-
-        function extractHashtags(text) {
-            var regex = /#(\w+)/g;
-            var matches = [];
-            var match;
-            while (match = regex.exec(text)) {
-                matches.push(match[1]);
-            }
-            return matches;
-        }
-
-        function displayTags() {
-            var tagsContainer = document.getElementById('tags-container');
-            tagsContainer.innerHTML = '';
-            hashtags.forEach(function(tag) {
-                var div = document.createElement('div');
-                div.className = 'tag';
-                div.textContent = '#' + tag;
-                div.onclick = function() { filterNotesByTag(tag); };
-                tagsContainer.appendChild(div);
-            });
-        }
-
-        function filterNotesByTag(tag) {
-            var filteredNotes = notes.filter(function(note) {
-                return note.text.includes('#' + tag);
-            });
-            displayNotes(filteredNotes);
-        }
-
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-
-        function makeLinksClickable(text) {
-            var urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, function(url) {
-                return '<a href="' + url + '" target="_blank" style="color: #ffd55f;">' + url + '</a>';
-            });
-        }
-
-        function highlightHashtags(text) {
-            var hashtagRegex = /#(\w+)/g;
-            return text.replace(hashtagRegex, function(hashtag) {
-                var color = getRandomColor();
-                return '<span style="background-color:' + color + '; color: #1f1f1f; border-radius: 5px; padding: 2px 4px;">' + hashtag + '</span>';
-            });
-        }
-
-        function displayNote(note) {
-            var list = document.getElementById('notes-list');
-            var div = document.createElement('div');
-            div.className = 'note-item';
-            div.innerHTML = highlightHashtags(makeLinksClickable(note.text));
-            list.appendChild(div);
-        }
-
-        function displayNotes(notesToDisplay) {
-            var list = document.getElementById('notes-list');
-            list.innerHTML = '';
-            notesToDisplay.forEach(displayNote);
-        }
-
-        function loadNotes() {
-            var params = {
-                TableName: tableName,
-                FilterExpression: "#type = :typeVal",
-                ExpressionAttributeNames: {
-                    "#type": "type"
-                },
-                ExpressionAttributeValues: {
-                    ":typeVal": "note"
-                }
-            };
-
-            dynamodb.scan(params, function(err, data) {
-                if (err) {
-                    alert("Error loading notes from DynamoDB: " + err.message);
-                } else {
-                    notes = data.Items.sort(function(a, b) {
-                        return new Date(b.date) - new Date(a.date);
+        function toggleArticleContent(imgElement, articleUrl) {
+            const content = imgElement.nextElementSibling.nextElementSibling.nextElementSibling;
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                content.innerHTML = ''; // Clear content if collapsed
+            } else {
+                fetch(articleUrl)
+                    .then(response => response.text())
+                    .then(data => {
+                        content.innerHTML = data;
+                        content.classList.add('expanded');
+                    })
+                    .catch(error => {
+                        content.innerHTML = '<p>Error loading content. Please try again later.</p>';
+                        content.classList.add('expanded');
                     });
-                    notes.forEach(function(note) {
-                        extractHashtags(note.text).forEach(function(tag) {
-                            hashtags.add(tag);
-                        });
-                    });
-                    displayTags();
-                    showMoreNotes(5); // Show the first 5 notes initially
-                }
-            });
-        }
-
-        function showMoreNotes(count = 1) {
-            var endIndex = currentIndex + count;
-            var notesToShow = notes.slice(currentIndex, endIndex);
-            notesToShow.forEach(displayNote);
-            currentIndex = endIndex;
-
-            if (currentIndex >= notes.length) {
-                document.querySelector('.show-more-button').disabled = true;
             }
         }
-
-        window.onload = function() {
-            loadNotes();
-        };
     </script>
 </body>
 </html>
+
 
 
 
