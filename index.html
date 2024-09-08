@@ -24,6 +24,13 @@
             color: #00bcd4;
         }
 
+        .page-description {
+            text-align: center;
+            font-size: 1.2em;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+        }
+
         .article-container {
             max-width: 800px;
             margin: 20px auto;
@@ -45,12 +52,6 @@
             font-size: 1.5em;
             font-weight: bold;
             color: #00bcd4;
-            text-decoration: none;
-            display: block;
-        }
-
-        .headline:hover {
-            text-decoration: underline;
         }
 
         .publication-date {
@@ -71,7 +72,7 @@
         }
 
         .article-content.expanded {
-            max-height: 500px; /* Adjust based on content height */
+            max-height: none; /* Allow content to expand fully */
             opacity: 1;
         }
 
@@ -83,15 +84,23 @@
 <body>
     <header>
         <h1>NFTFANS NEWS</h1>
+        <div class="page-description">Click on the image to read the full article.</div>
     </header>
 
+    <div class="article-container">
+        <img src="https://pbs.twimg.com/media/GWzq8SvWQAMP-OS?format=jpg&name=medium" 
+             alt="Article Image"
+             onclick="toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article2.html')">
+        <div class="headline">NFTs in 2050</div>
+        <div class="publication-date">Published on September 8, 2024</div>
+        <div class="article-content"></div>
+    </div>
+    
     <div class="article-container">
         <img src="https://pbs.twimg.com/media/GWgJJyuWgAIUnOd?format=jpg&name=medium" 
              alt="Article Image"
              onclick="toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article1.html')">
-        <a href="https://news.nftfanstoken.com/2024/09/03/nft-market-booms-in-2024.html" 
-           class="headline" 
-           target="_blank">NFT Market Booms in 2024</a>
+        <div class="headline">NFT Market Booms in 2024</div>
         <div class="publication-date">Published on September 3, 2024</div>
         <div class="article-content"></div>
     </div>
@@ -118,4 +127,3 @@
     </script>
 </body>
 </html>
-
