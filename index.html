@@ -76,6 +76,20 @@
             opacity: 1;
         }
 
+        .share-button {
+            display: inline-block;
+            margin: 15px 20px;
+            padding: 10px 20px;
+            font-size: 0.9em;
+            color: #fff;
+            background-color: #1da1f2;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
         .article-container:hover {
             transform: scale(1.02);
         }
@@ -94,6 +108,7 @@
         <div class="headline">NFTs in 2050</div>
         <div class="publication-date">Published on September 8, 2024</div>
         <div class="article-content"></div>
+        <button class="share-button" onclick="shareOnTwitter('NFTs in 2050')">Share on Twitter</button>
     </div>
     
     <div class="article-container">
@@ -103,6 +118,7 @@
         <div class="headline">NFT Market Booms in 2024</div>
         <div class="publication-date">Published on September 3, 2024</div>
         <div class="article-content"></div>
+        <button class="share-button" onclick="shareOnTwitter('NFT Market Booms in 2024')">Share on Twitter</button>
     </div>
 
     <script>
@@ -124,6 +140,13 @@
                     });
             }
         }
+
+        function shareOnTwitter(articleTitle) {
+            const articleUrl = window.location.href; // URL of the current page
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(articleTitle)}&url=${encodeURIComponent(articleUrl)}`;
+            window.open(twitterUrl, '_blank');
+        }
     </script>
 </body>
 </html>
+
