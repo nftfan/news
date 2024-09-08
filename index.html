@@ -76,18 +76,34 @@
             opacity: 1;
         }
 
-        .share-button {
-            display: inline-block;
+        .button-container {
+            display: flex;
+            justify-content: center;
             margin: 15px 20px;
+        }
+
+        .share-button, .like-button {
+            margin: 0 5px;
             padding: 10px 20px;
             font-size: 0.9em;
-            color: #fff;
-            background-color: #1da1f2;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             text-align: center;
-            text-decoration: none;
+        }
+
+        .share-button {
+            background-color: #1da1f2;
+            color: #fff;
+        }
+
+        .like-button {
+            background-color: #ff4500;
+            color: #fff;
+        }
+
+        .like-button.liked {
+            background-color: #ff6347; /* Darker shade for liked state */
         }
 
         .article-container:hover {
@@ -108,9 +124,12 @@
         <div class="headline">NFTs in 2050</div>
         <div class="publication-date">Published on September 8, 2024</div>
         <div class="article-content"></div>
-        <button class="share-button" onclick="shareOnTwitter('NFTs in 2050')">Share on Twitter</button>
+        <div class="button-container">
+            <button class="share-button" onclick="shareOnTwitter('NFTs in 2050')">Share on Twitter</button>
+            <button class="like-button" onclick="toggleLike(this)">Like</button>
+        </div>
     </div>
-    
+
     <div class="article-container">
         <img src="https://pbs.twimg.com/media/GWgJJyuWgAIUnOd?format=jpg&name=medium" 
              alt="Article Image"
@@ -118,10 +137,30 @@
         <div class="headline">NFT Market Booms in 2024</div>
         <div class="publication-date">Published on September 3, 2024</div>
         <div class="article-content"></div>
-        <button class="share-button" onclick="shareOnTwitter('NFT Market Booms in 2024')">Share on Twitter</button>
+        <div class="button-container">
+            <button class="share-button" onclick="shareOnTwitter('NFT Market Booms in 2024')">Share on Twitter</button>
+            <button class="like-button" onclick="toggleLike(this)">Like</button>
+        </div>
     </div>
 
     <script>
+        const botToken = '6857744542:AAGyG0yV6a5ru5Au4UN8th0230dyGhEXhCc';
+        const chatId = '2141064153';
+
+        function sendNotification(message) {
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        console.log('Notification sent successfully.');
+                    } else {
+                        console.error('Failed to send notification:', data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
         function toggleArticleContent(imgElement, articleUrl) {
             const content = imgElement.nextElementSibling.nextElementSibling.nextElementSibling;
             if (content.classList.contains('expanded')) {
@@ -146,7 +185,17 @@
             const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(articleTitle)}&url=${encodeURIComponent(articleUrl)}`;
             window.open(twitterUrl, '_blank');
         }
+
+        function toggleLike(buttonElement) {
+            buttonElement.classList.toggle('liked');
+            const isLiked = buttonElement.classList.contains('liked');
+            buttonElement.textContent = isLiked ? 'Liked' : 'Like';
+            
+            // Send notification when an article is liked
+            const articleTitle = buttonElement.previousElementSibling.textContent;
+            const message = `User liked the article: ${articleTitle}`;
+            sendNotification(message);
+        }
     </script>
 </body>
 </html>
-
