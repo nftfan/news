@@ -72,12 +72,27 @@
         }
 
         .article-content.expanded {
-            max-height: none; /* Allow content to expand fully */
+            max-height: none;
             opacity: 1;
         }
 
         .article-container:hover {
             transform: scale(1.02);
+        }
+
+        .share-buttons {
+            margin: 10px 20px;
+            text-align: left;
+        }
+
+        .share-buttons a {
+            color: #00bcd4;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .share-buttons a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -87,41 +102,51 @@
         <div class="page-description">Click on the image to read the full article.</div>
     </header>
 
-    <div class="article-container">
+    <div class="article-container" id="article-1">
         <img src="https://pbs.twimg.com/media/GWzq8SvWQAMP-OS?format=jpg&name=medium" 
              alt="Article Image"
-             onclick="toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article2.html')">
+             onclick="toggleArticleContent(this, 'nfts-in-2050')">
         <div class="headline">NFTs in 2050</div>
         <div class="publication-date">Published on September 8, 2024</div>
         <div class="article-content"></div>
+        <!-- Social Media Share Links -->
+        <div class="share-buttons">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://news.nftfanstoken.com/?article=nfts-in-2050" target="_blank">Share on Facebook</a>
+            <a href="https://twitter.com/intent/tweet?url=https://news.nftfanstoken.com/?article=nfts-in-2050&text=Check out this article: NFTs in 2050" target="_blank">Share on Twitter</a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://news.nftfanstoken.com/?article=nfts-in-2050" target="_blank">Share on LinkedIn</a>
+        </div>
     </div>
     
-    <div class="article-container">
+    <div class="article-container" id="article-2">
         <img src="https://pbs.twimg.com/media/GWgJJyuWgAIUnOd?format=jpg&name=medium" 
              alt="Article Image"
-             onclick="toggleArticleContent(this, 'https://raw.githubusercontent.com/nftfan/news/main/articles/article1.html')">
+             onclick="toggleArticleContent(this, 'nft-market-boom-2024')">
         <div class="headline">NFT Market Booms in 2024</div>
         <div class="publication-date">Published on September 3, 2024</div>
         <div class="article-content"></div>
+        <!-- Social Media Share Links -->
+        <div class="share-buttons">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://news.nftfanstoken.com/?article=nft-market-boom-2024" target="_blank">Share on Facebook</a>
+            <a href="https://twitter.com/intent/tweet?url=https://news.nftfanstoken.com/?article=nft-market-boom-2024&text=Check out this article: NFT Market Booms in 2024" target="_blank">Share on Twitter</a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://news.nftfanstoken.com/?article=nft-market-boom-2024" target="_blank">Share on LinkedIn</a>
+        </div>
     </div>
 
     <script>
-        function toggleArticleContent(imgElement, articleUrl) {
+        function toggleArticleContent(imgElement, articleId) {
             const content = imgElement.nextElementSibling.nextElementSibling.nextElementSibling;
+            const currentUrl = window.location.href.split('?')[0];
+            const newUrl = `${currentUrl}?article=${articleId}`;
+
             if (content.classList.contains('expanded')) {
                 content.classList.remove('expanded');
                 content.innerHTML = ''; // Clear content if collapsed
+                history.replaceState(null, '', currentUrl); // Reset URL when collapsed
             } else {
-                fetch(articleUrl)
-                    .then(response => response.text())
-                    .then(data => {
-                        content.innerHTML = data;
-                        content.classList.add('expanded');
-                    })
-                    .catch(error => {
-                        content.innerHTML = '<p>Error loading content. Please try again later.</p>';
-                        content.classList.add('expanded');
-                    });
+                // Simulate fetching article content
+                content.innerHTML = `<p>Loading content for ${articleId}...</p>`;
+                content.classList.add('expanded');
+                history.replaceState(null, '', newUrl); // Update the URL
             }
         }
     </script>
