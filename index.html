@@ -420,11 +420,11 @@ header h1 {
     // Get the article container
     const articleContainer = buttonElement.closest('.article-container');
     
-    // Get the article title from the headline
-    const articleTitle = articleContainer.querySelector('.headline').textContent;
+    // Get the article URL from the headline <a> tag
+    const articleUrl = articleContainer.querySelector('.headline').href;
     
-    // Get the current page URL (you might want to use a specific URL instead)
-    const articleUrl = window.location.href;
+    // Get the article title from the headline text
+    const articleTitle = articleContainer.querySelector('.headline').textContent;
     
     // Create Twitter share URL
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(articleTitle)}&url=${encodeURIComponent(articleUrl)}`;
@@ -432,6 +432,7 @@ header h1 {
     // Open Twitter share window
     window.open(twitterUrl, '_blank');
 }
+
 
     </script>
 	
